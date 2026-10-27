@@ -1,2 +1,28 @@
-# -RAG-demo
-本项目是「矿产资源储量报告智能化预评审服务平台」前端，基于 React 18 + TypeScript + Vite + Tailwind，配合 ECharts 构建。数据层采用双通道：看板走 Supabase 直查，报告上传、解析、入库等重业务走自研 REST API，统一封装并接入 JWT 鉴权。  核心亮点是文档解析质检：用 pdfjs-dist 按页懒渲染 PDF，自研 Markdown 渲染器解析 GFM/HTML 表格与 KaTeX 公式，形成「原件 PDF + 页级解析」双栏对照，支持页码同步与全屏。知识库分层建模，支持上传、解析预览、确认入库、Milvus 向量化的异步入库流水线，是一套面向专业评审的 RAG 智能前端
+# mineral_platform
+
+矿产资源储量报告智能化预评审服务平台 — 前端（React + Vite）。
+
+GitLab：`http://192.168.1.102:8929/mineral/mineral_platform.git`
+
+## 本地开发
+
+```bash
+npm ci
+cp .env.production .env.local   # 或按需编辑 .env
+npm run dev
+```
+
+## 生产构建
+
+```bash
+npm ci
+npm run build   # 产物在 dist/
+```
+
+同机经 Nginx 反代时，生产变量见 `.env.production`（`VITE_API_BASE_URL=/api/v1`）。
+
+## 部署 / Jenkins
+
+目录约定与流水线说明见 [deploy.md](./deploy.md)。仓库根目录 `Jenkinsfile`：构建 → 同步到 `/opt/mineral/mineral_platform/dist` → reload Nginx。
+
+上线顺序：先部署 **mineral_api**（含 Nginx）→ 再跑本仓库流水线。
